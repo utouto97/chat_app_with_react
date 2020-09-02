@@ -1,0 +1,70 @@
+import React from 'react';
+
+import API from '../API';
+
+import { Button, TextField } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+}));
+const classes = useStyles();
+
+class Login extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      password: ''
+    };
+
+    this.handleChangeUsername = this.handleChangeUsername.bind(this);
+    this.handleChangePassword = this.handleChangePassword.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChangeUsername(event) {
+    this.setState({
+      username: event.target.value,
+    });
+  }
+
+  handleChangePassword(event) {
+    this.setState({
+      password: event.target.value,
+    });
+  }
+
+  handleSubmit(event) {
+    const body = Object.keys(this.state).map((key) =>
+      key + "=" + encodeURIComponent(this.state[key])).join("&");
+
+    API.post('/login', body)
+      .then(res => this.props.history.push('/mypage'))
+      .catch(e => console.log('login error: ', e));
+
+    this.setState({
+      password: ''
+    });
+    event.preventDefault();
+  }
+
+  render() {
+
+    return (
+      <div className="App" >
+        <form>
+          <TextField required={true} label='Username' variant='outlined' value={this.state.username} onChange={this.handleChangeUsername} />
+          <br />
+          <TextField required={true} label='Password' type='password' variant='outlined' value={this.state.password} onChange={this.handleChangePassword} />
+          <br />
+          <Button onClick={this.handleSubmit} variant='contained' color='primary'>
+            ログイン
+          </Button>
+        </form>
+        <p> <a href='/mypage'>Go to Mypage.</a> </p>
+      </div >
+    )
+  };
+}
+
+export default Login;
